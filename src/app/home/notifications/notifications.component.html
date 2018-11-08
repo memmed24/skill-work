@@ -1,0 +1,26 @@
+<!-- <ul>
+  <li *ngFor="let notification of notifications">
+    {{notification['username'] + ' ' + nofitication_types[notification['type'] - 1]['text']}}
+  </li>
+</ul> -->
+
+<section id="notification">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <ul class="list-group">
+          <li class="list-group-item friend-request" *ngFor="let notification of notifications">
+            <div class="row">
+              <div class="col-md-1">
+                <fa name="{{nofitication_types[notification['type'] - 1]['icon']}}"></fa>
+              </div>
+              <div class="col-md-10">
+                {{notification.username + ' ' +nofitication_types[notification['type'] - 1]['text']}}
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

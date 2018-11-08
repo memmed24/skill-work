@@ -1,0 +1,42 @@
+<section id="login">
+  <div class="login-container">
+    <div class="main">
+      <div class="info">
+        <h2>Register</h2>
+      </div>
+      <div class="forms">
+        <form [formGroup]="registerForm" (submit)="onSubmit()">
+          <div class="form-group">
+            <label for="">Username</label>
+            <input type="text" formControlName="benutzername" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="">Name</label>
+            <input type="text" formControlName="vorname" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="">Surname</label>
+            <input type="text" formControlName="nachname" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Password</label>
+            <input type="text" formControlName="passwort" class="form-control">
+          </div>
+          <div class="form-group">
+            <input type="submit" value="Register" class="btn btn-outline-primary btn-xs">
+
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="register">
+        <p>Do you have an <a routerLink="/login">account ?</a></p>
+      </div>
+      <span>/</span>
+      <div class="forgot">
+        <p>Forgot</p>
+      </div>
+    </div>
+  </div>
+</section>

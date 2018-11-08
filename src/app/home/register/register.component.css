@@ -1,0 +1,63 @@
+#login {
+  background-color: #16214E;
+}
+.login-container {
+  display: flex;
+  align-items: center;
+  flex-flow: column;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+}
+.main {
+  display: flex;
+  flex-flow: row;
+  height: 400px;
+}
+.info {
+  background-color: #44C7F5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 100px;
+  padding-right: 100px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+.info h2 {
+  color: white;
+  font-family: Verdana, Geneva, Tahoma, sans-serif
+} 
+.forms {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 100px;
+  padding-right: 100px;
+  background-color: white;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.bottom {
+  display: flex;
+  flex-flow: row;
+}
+.bottom span {
+  color: white;
+}
+.register { 
+  padding: 0 20px;
+}
+.register p{
+  color: gray;
+}
+.register a {
+  color: white;
+}
+.forgot {
+  padding: 0 20px;
+}
+.forgot p {
+  color: white;
+}

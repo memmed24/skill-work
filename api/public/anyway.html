@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  Hello there
+  <button id="btn">Ok</button>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.dev.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      var socket = io.connect('http://localhost:8000');
+
+      socket.emit('hey', {
+        message: "Hello World!"
+      });
+
+      // basha dushdum, amma men de bayaqdan bele yazirdim. :/ 
+      // mans cors policy o demekdi ki sen bashqa domaine request atirsan
+      // browser de blokluyur bele requestleri
+      // belke burda 8000 idi nodda 80 ona gore ola biler? yox
+      // dunen angularda 4200, node.js 3000, socket 4000 idi. belke onda qarishdi?
+      // mans socketdeki port qoshuldugu portdu teze port achmirsan
+      // angulardaki 4200 dev portudu dev portu save eliyen kimi reload olsun deyedi
+      // birce dene port olub o da 3000
+      // angulardan sen request gonderende localhost:4200--->localhost:3000
+      // kimi olur, eslinde ise angulari build eliyenden sonra index.html filesidi yeni
+      // angular-clide proxy server axtar gor tapirsan
+      // senin devin 4200 olur amma proxy url qeyd eliyirsen requestleri istediyin port kimi
+      // gonderir basha dushdun?
+      // he basha dushdum, chox sagol :) deymez:)
+    });
+
+  </script>
+</body>
+</html>
