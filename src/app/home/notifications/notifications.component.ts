@@ -1,3 +1,4 @@
+import { SoundService } from './../services/sound.service';
 import { NofiticationsService } from './../services/nofitications.service';
 import { Component, OnInit, ViewChildren, ElementRef } from '@angular/core';
 import * as io from 'socket.io-client';
@@ -16,7 +17,8 @@ export class NotificationsComponent implements OnInit {
   @ViewChildren('messagebox') messageBox: ElementRef;
 
   constructor(
-    private nsService: NofiticationsService
+    private nsService: NofiticationsService,
+    private audioService: SoundService
   ) { 
     this.socket = io('http://localhost:8000');
   }
@@ -25,7 +27,10 @@ export class NotificationsComponent implements OnInit {
     this.nofitication_types = this.nsService.notifications.types;
     this.fetchAll();
     this.socket.on('notification/1', (data) => {
-      this.notifications.unshift(data);
+      if(data) {
+        this.audioService.notification();
+        this.notifications.unshift(data);
+      }
     });
   }
 

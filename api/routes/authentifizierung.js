@@ -58,25 +58,25 @@ router.post('/login', (req, res) => {
           expiresIn: 86400
         });
 
-        // update token 
+        //   // update token 
         let sql2 = `UPDATE ${tabelle} SET token = '${token}', online = true WHERE benutzername = '${benutzerdaten.benutzername}'`;
         verbindung.query(sql2);
         res.status(200).send({
           auth: true,
           token: token
         });
-        
+
 
       } else {
-        res.status(200).json({
+        res.status(401).json({
           auth: false,
           message: 'Falscher passwort'
         });
       }
     } else {
-      res.status(200).json({
+      res.status(404).json({
         auth: false,
-        message: 'Falscher benutzername oder passwort'
+        message: 'Benutzer ist nicht vorhanden'
       });
     }
   });
@@ -88,13 +88,13 @@ router.post('/logout', authguard.isAuth, (req, res) => {
   let token = req.headers['x-access-token'];
 
   // if (user_id) {
-    let sql = `UPDATE ${tabelle} SET token = null, online = false  WHERE token = '${token}'`;
-    verbindung.query(sql, (err, result) => {
-      res.status(200).json({
-        auth: false,
-        message: 'Logged out'
-      });
-    })
+  let sql = `UPDATE ${tabelle} SET token = null, online = false  WHERE token = '${token}'`;
+  verbindung.query(sql, (err, result) => {
+    res.status(200).json({
+      auth: false,
+      message: 'Logged out'
+    });
+  })
   // }
 
 });
