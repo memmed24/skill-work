@@ -1,25 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('./../guards/auth');
-const connection = require('./../db/db');
+const User = require('../models/user');
+const Notification = require('../models/notification');
 
 
-router.get('/all', auth.isAuth, (req, res, next) => {
+router.get('/', auth.isAuth, async (req, res, next) => {
 
-  let user = req.benutzerdaten;
-  let sql = `SELECT b.vorname AS name, b.nachname AS surname, b.benutzername AS username, n.type, n.created_at FROM notifications n
-    INNER JOIN benutzer b
-    ON n.from_user = b.id
-    WHERE to_user = '${user['id']}' ORDER BY n.id DESC`;
+  let notifications = await Notification.find({ to: req.auth['id'] })
+    .select('type from created').populate({
+      path: 'from',
+      select: 'name surname username'
+    });
 
-  connection.query(sql, (err, response) => {
-    if (err) {
-      return res.send(err)
-    }
-    res.send(response);
-
-  })
-
+  res.status(200).send(notifications);
+  
 });
 
 

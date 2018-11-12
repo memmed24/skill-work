@@ -11,8 +11,12 @@ const authentifizierung = require('./api/routes/authentifizierung');
 const nachrichten = require('./api/routes/nachrichten');
 const profile = require('./api/routes/profile');
 const authguard = require('./api/guards/auth');
-const verbindung = require('./api/db/db');
 const notifications = require('./api/routes/notifications');
+
+// models
+const Notification = require('./api/models/notification');
+const User = require('./api/models/user');
+const FriendRequest = require('./api/models/friendrequest');
 
 
 const port = 8000;
@@ -33,7 +37,7 @@ app.use(express.static(__dirname + '/dist/todo-front'));
 
 app.use('/api', authentifizierung);
 app.use('/api/profile', profile);
-app.use('/api/nachrichten', nachrichten);
+// app.use('/api/nachrichten', nachrichten);
 app.use('/api/notification', notifications);
 
 
@@ -41,32 +45,54 @@ app.use('/api/notification', notifications);
 
 
 
-app.post('/api/profile/:id/send/friend/request', authguard.isAuth, (req, res, next) => {
+app.post('/api/profile/:username/send/friend/request', authguard.isAuth, async (req, res, next) => {
 
-  let loggedUser = req.benutzerdaten;
-  let requestUser = req.params['id'];
-  let sql = `INSERT INTO friendrequests (from_user, to_user) VALUES(${loggedUser['id']}, ${requestUser})`;
+  let username = req.params['username'];
 
-  // res.send(sql);
-  verbindung.query(sql, (err, response) => {
-    res.status(200).json({
-      message: `Request has been sent ${loggedUser['vorname']}`
+  // check if user exists
+  let user = await User.findOne({username: username});
+
+  if(!user) {
+    return res.status(404).json({
+      message: 'User is not found'
     });
-    let sql = `INSERT INTO notifications (from_user, to_user, type) VALUES (${loggedUser['id']}, ${requestUser}, 1)`;
+  }
 
-    verbindung.query(sql, (error, response2) => {
-      if (error) return res.send(error);
-      io.emit(`notification/${requestUser}`, {
-        type: 1,
-        name: loggedUser['vorname'],
-        surname: loggedUser['nachname'],
-        username: loggedUser['benutzername']
-      });
-    });
+  let auth = await User.findById(req.auth['id']).select('friendrequests');
 
-
-
+  var friendreq = new FriendRequest({
+    from: req.auth['id'],
+    to: user['id']
   });
+  friendreq.save();
+  
+  
+  user.friendrequests.push(friendreq);
+  auth.friendrequests.push(friendreq);  
+
+ 
+
+  var notification = new Notification({
+    type: 1
+  });
+
+  notification.from = req.auth['id'];
+  notification.to = user['id'];
+
+  user.notifications.push(notification);
+  auth.save();
+  user.save();
+
+  notification.save().then((response) => {
+    io.emit(`notification/${user['id']}`, {
+      type: 1,
+      name: req.auth['name'],
+      surname: req.auth['surname'],
+      username: req.auth['username']
+    });
+    res.send(response);
+  }).catch(error => res.send(error));
+
 
 });
 
@@ -75,6 +101,7 @@ app.post('/api/profile/:id/accept/friend/request', authguard.isAuth, (req, res, 
   // let loggedUser = requ
 
 });
+
 app.get('*', function (req, res) {
   res.sendFile(__dirname + '/dist/todo-front/index.html');
 });

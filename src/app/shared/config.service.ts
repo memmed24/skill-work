@@ -20,7 +20,7 @@ export class ConfigService {
 
   public notificationsRoutes = {
     all: () => {
-      return this.api_url + 'notification/all'
+      return this.api_url + 'notification/'
     }
   };
 

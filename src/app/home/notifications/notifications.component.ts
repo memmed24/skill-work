@@ -42,8 +42,9 @@ export class NotificationsComponent implements OnInit {
   fetchAll(): void {
     this.nsService.getAll().subscribe((data) => {
       this.notifications = new Array;
-      console.log(data);
       this.notifications = data.json();
+      console.log(this.notifications);
+
     }, (error) => {
       console.log("error ", error);
     });

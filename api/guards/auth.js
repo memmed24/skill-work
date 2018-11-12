@@ -1,33 +1,32 @@
 const jwt = require('jsonwebtoken'),
   config = require('../config/config'),
-  verbindung = require('../db/db');
+  connection = require('../db/db'), 
+  User = require('../models/user');
 
 module.exports.isAuth = (req, res, next) => {
 
   let token = req.headers['x-access-token'];
   if (!token) return res.status(403).json({
-    auth: 'Gescheitert',
-    message: 'Kein token gegeben'
+    auth: false,
+    message: 'No token provided'
   });
+
   jwt.verify(token, config.sekret, (err, decoded) => {
 
-    // if (err) return res.status(500).send('Konnte api nicht authentifizieren');
-    if(err) return res.status(500).send(err);
+    if(err) return res.status(401).json({
+      auth: false, 
+      message: "Token is expired"
+    });
 
-    let sql = `SELECT id, vorname, nachname, benutzername FROM benutzer WHERE token = '${token}'`;
-    verbindung.query(sql, (error, result) => {
-      if (error) return res.status(502).send('Datenbankfehler');
-
-      if (result) {
-        req.benutzerdaten = result[0];
-        next();
-      } else {
-        res.status(401).send('Unauthorized');
-
-      }
-
-
-    })
+    let user = User.findOne({token: token}).select('id online token').exec((err, response) => {
+      if(err) return res.status(500).json(err);
+      
+      if(response) { 
+        req.auth = response;
+        return next();      
+      } 
+      return res.status(401).send('Unauthorized');
+    });
 
   });
 

@@ -33,7 +33,6 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     if (this.loginForm.valid) {
       this._authService.login(this.loginForm.value).subscribe((data) => {
-
         const toast = (Swal as any).mixin({
           toast: true,
           position: 'top-end',

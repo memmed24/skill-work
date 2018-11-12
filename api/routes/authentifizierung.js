@@ -1,109 +1,116 @@
 const express = require('express'),
   router = express.Router(),
-  verbindung = require('./../db/db'),
   passworthash = require('password-hash'),
-  benutzerModel = require('../models/benutzer'),
   authguard = require('../guards/auth'),
   jwt = require('jsonwebtoken'),
   config = require('../config/config'),
-  tabelle = 'benutzer';
+  User = require('../models/user');
 
-router.post('/registrieren', (req, res) => {
 
-  let vorname = req.body['vorname'] || null,
-    nachname = req.body['nachname'] || null,
-    passwort = passworthash.generate(req.body['passwort']),
-    benutzername = req.body['benutzername'],
-    sql = `SELECT COUNT(benutzername) FROM benutzer WHERE benutzername = '${benutzername}'`;
+router.post('/registrieren', async (req, res) => {
 
-  verbindung.query(sql, (err, result) => {
-    if (err) {
-      res.status(502).json({
-        message: 'Datenbankfehler'
-      });
-    }
-    if (result[0]["COUNT(benutzername)"] == 1) {
-      res.status(409).json({
-        message: 'Benutzer ist schon angemeldet'
-      });
-    } else {
-      let sql2 = `INSERT INTO ${tabelle}(vorname, nachname, benutzername, passwort) VALUES('${vorname}', '${nachname}', '${benutzername}', '${passwort}')`;
-      verbindung.query(sql2, (err, result) => {
-        if (err) {
-          res.status(502).json({
-            message: 'Datenbankfehler'
-          })
-        } else {
-          res.status(200).json({
-            message: 'Erfolgreich registriert'
-          });
-        }
-      });
-    }
-  });
+  let fields = {
+    name: req.body['vorname'] || null,
+    surname: req.body['nachname'] || null,
+    password: req.body['passwort'] ? passworthash.generate(req.body['passwort']) : null,
+    username: req.body['benutzername'] || null,
+    email: req.body['email'] || null
+  }
+
+
+  if (!fields.username || !fields.password) {
+    return res.status(422).send({
+      message: `Some field is missing :(`
+    })
+  }
+
+  // check is user exists
+  let checkUser = await User.findOne({ username: fields.username });
+
+  if (checkUser) {
+    return res.status(409).json({
+      message: "User is already exist"
+    });
+  }
+
+  user = new User(fields);
+
+  user.save().then(response => {
+
+    return res.status(200).json({
+      auth: false,
+      message: 'Registered successfully'
+    })
+
+  }).catch(error => res.status(500).json(error));
+
+
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
 
-  let benutzername = req.body['benutzername'],
-    passwort = req.body['passwort'],
-    sql = `SELECT * FROM ${tabelle} WHERE benutzername = '${benutzername}'`;
+  let fields = {
+    username: req.body['benutzername'] || null,
+    password: req.body['passwort'] || null
+  }
 
-  verbindung.query(sql, (err, result) => {
-    if (result.length !== 0) {
-      let benutzerdaten = result[0];
-      if (passworthash.verify(passwort, benutzerdaten['passwort'])) {
+  if (!fields.username || !fields.password) {
+    return res.status(422).send({
+      message: `Some field is missing :(`
+    })
+  }
 
-        let token = jwt.sign({ id: benutzerdaten['id'] }, config.sekret, {
-          expiresIn: 86400
-        });
+  let user = await User.findOne({ username: fields.username });
 
-        //   // update token 
-        let sql2 = `UPDATE ${tabelle} SET token = '${token}', online = true WHERE benutzername = '${benutzerdaten.benutzername}'`;
-        verbindung.query(sql2);
-        res.status(200).send({
-          auth: true,
-          token: token
-        });
+  if (!user) {
+    return res.status(404).json({
+      message: "User is not exist"
+    });
+  }
 
+  if (!passworthash.verify(fields.password, user['password'])) {
+    return res.status(401).json({
+      auth: false,
+      message: 'Wrong password'
+    });
+  }
 
-      } else {
-        res.status(401).json({
-          auth: false,
-          message: 'Falscher passwort'
-        });
-      }
-    } else {
-      res.status(404).json({
-        auth: false,
-        message: 'Benutzer ist nicht vorhanden'
-      });
-    }
+  let token = jwt.sign({ id: user['_id'] }, config.sekret, {
+    expiresIn: 86400
   });
+
+  user.token = token;
+  user.online = true;
+  user.save().then(() => {
+    res.status(200).json({
+      auth: true, 
+      token: token
+    });
+  }).catch(error => res.status(500).json(error));
+
 
 });
 
 router.post('/logout', authguard.isAuth, (req, res) => {
 
-  let token = req.headers['x-access-token'];
+  req.auth.token = null;
+  req.auth.online = false;
 
-  // if (user_id) {
-  let sql = `UPDATE ${tabelle} SET token = null, online = false  WHERE token = '${token}'`;
-  verbindung.query(sql, (err, result) => {
+  req.auth.save().then(() => {
     res.status(200).json({
       auth: false,
       message: 'Logged out'
     });
-  })
-  // }
+  }).catch(error => res.status(500).json(error));
 
 });
 
 router.post('/test', authguard.isAuth, (req, res) => {
 
-  res.json({
-    'success': req.benutzerdaten
-  })
+  req.auth.name = "Anywone";
+  req.auth.save();
+
+  res.send({status: 'succes'});
 
 });
 
