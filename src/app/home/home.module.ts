@@ -7,22 +7,30 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { LogoutComponent } from './logout/logout.component';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { ProfileComponent } from './profile/profile.component';
+import { HeaderComponent } from './header/header.component';
+import { ProfileModule } from './profile/profile.module';
 
 @NgModule({
   imports: [
     CommonModule,
     RoutingModule,
     ReactiveFormsModule,
-    AngularFontAwesomeModule
+    AngularFontAwesomeModule,
+    ProfileModule
   ],
   declarations: [
     LoginComponent,
     RegisterComponent,
     LogoutComponent,
-    NotificationsComponent],
+    NotificationsComponent,
+    ProfileComponent,
+    HeaderComponent],
   exports: [
     LogoutComponent,
-    NotificationsComponent
+    NotificationsComponent, 
+    ProfileComponent,
+    HeaderComponent
   ]
 
 })

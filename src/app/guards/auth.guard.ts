@@ -1,3 +1,4 @@
+import { CookieService } from 'ngx-cookie-service';
 import { AuthService } from './../home/services/auth.service';
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
@@ -10,7 +11,8 @@ export class AuthGuard implements CanActivate {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private cookieService: CookieService
   ) {
 
   }
@@ -21,6 +23,7 @@ export class AuthGuard implements CanActivate {
     if (this.authService.isLogged()) {
       return true;
     }
+    this.cookieService.delete('api_token');
     this.router.navigate(['login']);
   }
 }

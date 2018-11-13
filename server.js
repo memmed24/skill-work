@@ -96,9 +96,9 @@ app.post('/api/profile/:username/send/friend/request', authguard.isAuth, async (
 
 });
 
-app.post('/api/profile/:id/accept/friend/request', authguard.isAuth, (req, res, next) => {
+app.post('/api/profile/:username/accept/friend/request', authguard.isAuth, (req, res, next) => {
 
-  // let loggedUser = requ
+  
 
 });
 

@@ -1,0 +1,41 @@
+ .profile-info {
+  position: absolute;
+  top: -290px;
+  border-radius: 2px;
+  box-shadow: 0 0 50px grey;
+}
+ .sub-container {
+  border: 1px solid #e3e3e3;
+}
+.profile-picture {
+  position: relative;
+}
+.profile-picture img {
+  width: 100%;
+} 
+.contact-methods {
+  position: absolute;
+  left: 23px;
+  bottom: 281px;
+  padding: 0 20px;
+}
+.follow-btn, .message-btn {
+  border: 0;
+  border-radius: 50px;
+  padding: 5px 45px;
+  color:rgba(0,0,0,0.9);
+  background: white;
+  cursor: pointer;
+}
+.follow-btn {
+  margin-right: 20px;
+}
+.follow-btn:focus, .message-btn:focus {
+  outline: 0;
+}
+.about {
+  padding: 20px;
+}
+.about p{
+  color: #BABABA;
+}

@@ -1,0 +1,36 @@
+#cover {
+  height: 400px;
+  background: url('https://images8.alphacoders.com/564/564862.jpg') no-repeat center;
+  background-size: 100%;
+  background-position: center;
+}
+
+.full-height { 
+  height: 100%;
+}
+
+.aligner {
+  display: flex;
+  align-items: center;
+}
+
+.profile-info {
+}
+
+.fullname {
+  padding-bottom: 20px;
+}
+.aligner-bottom {
+  align-self: flex-end;
+}
+
+.aligner-bottom h3 {
+  align-self: flex-end;
+  color: white;
+  font-weight: 100;
+  font-size: 50px;
+}
+
+.anyway {
+  position: absolute;
+}

@@ -1,0 +1,32 @@
+header {
+  background-color: transparent;
+  padding: 10px 0;
+  position: fixed;
+  width: 100%;
+}
+.logo span{
+  color: white;
+}
+
+.search-input-container {
+  border: 1px solid ghostwhite;
+  border-radius: 50px;
+  border-color: #e3e3e3;
+  padding: 2px 20px;
+  display: flex;
+  flex-flow: row;
+}
+.search-icon {
+  padding-right: 3px;
+}
+.search-text {
+  border: 0;
+  background-color: transparent;
+  color: white;
+}
+.search-text:focus {
+  outline: none;
+}
+.search-text::placeholder {
+  color: white;
+}
