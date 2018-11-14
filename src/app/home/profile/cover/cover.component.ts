@@ -1,3 +1,4 @@
+import { AuthService } from './../../services/auth.service';
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
@@ -7,12 +8,13 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class CoverComponent implements OnInit {
 
-  @Input('fullname') fullname: string;
+  @Input('userdata') userdata: Object;
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
-
   }
+
+ 
 
 }

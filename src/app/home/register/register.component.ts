@@ -40,7 +40,7 @@ export class RegisterComponent implements OnInit {
         .subscribe((data) => {
           if (data.status == 200) {
             this.audioService.success();
-            Swal('You are all set', 'Now login to enter the site', 'success');
+            Swal('You are all set', 'To continue please login', 'success');
             setTimeout(() => {
               this._router.navigate(['/login']);
             }, 1500);

@@ -28,20 +28,10 @@ app.use(bodyParser.json());
 // app.use(express.static('dist'));
 
 app.use(express.static(__dirname + '/dist/todo-front'));
-
-
-
-// app.use(express.static('public'));
-
-
-
 app.use('/api', authentifizierung);
 app.use('/api/profile', profile);
 // app.use('/api/nachrichten', nachrichten);
 app.use('/api/notification', notifications);
-
-
-
 
 
 

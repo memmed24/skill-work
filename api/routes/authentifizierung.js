@@ -84,7 +84,8 @@ router.post('/login', async (req, res) => {
   user.save().then(() => {
     res.status(200).json({
       auth: true, 
-      token: token
+      token: token,
+      username: user['username']
     });
   }).catch(error => res.status(500).json(error));
 

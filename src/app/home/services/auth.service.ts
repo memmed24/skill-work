@@ -62,4 +62,8 @@ export class AuthService {
     return !(date.valueOf() > new Date().valueOf());
   }
 
+  public checkIfUserIsAuthed(username: string): boolean {
+    return this.cookieService.get('username') === username;
+  }
+
 }

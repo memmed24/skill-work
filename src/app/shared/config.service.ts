@@ -24,6 +24,12 @@ export class ConfigService {
     }
   };
 
+  public profileRoutes = {
+    get: () => {
+      return `${this.api_url}profile`
+    }
+  };
+
   constructor() { }
 
   getApiUrl() {

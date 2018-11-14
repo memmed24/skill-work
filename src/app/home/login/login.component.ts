@@ -47,6 +47,7 @@ export class LoginComponent implements OnInit {
         if (data.status == 200 && response['auth'] == true) {
           data = data.json();
           this.cookieService.set('api_token', data['token']);
+          this.cookieService.set('username', data['username']);
           this.router.navigate(['/']);
         }
       }, error => {
