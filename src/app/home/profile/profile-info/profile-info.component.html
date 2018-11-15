@@ -5,8 +5,11 @@
         <img src="https://s12.favim.com/610/160625/aesthetic-alex-turner-alternative-arctic-monkeys-Favim.com-4450442.jpeg"
           alt="">
       </div>
-      <div class='contact-methods' *ngIf="contact_methods">
-        <button class="follow-btn">Follow</button>
+      <div class='contact-methods' *ngIf="!userdata['authprofile']">
+        <button class="follow-btn" (click)="contactClick(contact_button)">{{contact_button}}</button>
+
+        <!-- <button class="follow-btn" *ngIf="userdata['isFriend']">Unfriend</button> -->
+        <!-- <button class="follow-btn" *ngIf="userdata['isFriendRequestSent']">Cancel</button> -->
         <button class='message-btn'>Message</button>
       </div>
       <div class='about'>

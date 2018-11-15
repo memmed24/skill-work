@@ -50,6 +50,15 @@ app.post('/api/profile/:username/send/friend/request', authguard.isAuth, async (
 
   let auth = await User.findById(req.auth['id']).select('friendrequests');
 
+  // check is friend request already sent
+
+  let fr = await FriendRequest.findOne({from: req.auth['id'], to: user['id']});
+  if(fr) {
+    return res.status(403).json({
+      message: "Friend request has sent"
+    })
+  }
+
   var friendreq = new FriendRequest({
     from: req.auth['id'],
     to: user['id']
@@ -86,9 +95,30 @@ app.post('/api/profile/:username/send/friend/request', authguard.isAuth, async (
 
 });
 
-app.post('/api/profile/:username/accept/friend/request', authguard.isAuth, (req, res, next) => {
+app.post('/api/profile/:username/accept/friend/request', authguard.isAuth, async (req, res, next) => {
 
-  
+  let username = req.params['username'];
+  let req_reciever = await User.findOne({token: req.auth['token']}).select('id name surname username friends');
+  let req_sender = await User.findOne({username: username}).select('id name surname username friends');
+ 
+  // check if friend request is exists 
+  let friendrequest = await FriendRequest.findOne({from: req_sender['id'], to: req_reciever['id']});
+  if(!friendrequest) {
+    return res.status(500).json({
+      message: "There's no request from this user"
+    });
+  }
+
+  friendrequest.remove();
+
+  req_reciever.friends.push(req_sender['id']);
+  req_sender.friends.push(req_reciever['id']);
+  req_reciever.save();
+  req_sender.save();
+
+  return res.status(200).json({
+    'message': 'Friend accepted'
+  });
 
 });
 

@@ -15,11 +15,11 @@ export class ProfileService {
     private cookie: CookieService
   ) { }
 
-  getProfile(): Observable<any> {
+  getProfile(username?: string): Observable<any> {
     let token = this.cookie.get('api_token');
     let headers = new Headers();
     headers.append('x-access-token', token);
-    return this.http.get(this.config.profileRoutes.get(), {
+    return this.http.get(this.config.profileRoutes.get(username), {
       headers: headers
     });
   }

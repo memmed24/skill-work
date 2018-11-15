@@ -9,6 +9,10 @@ const pRoutes: Routes = [
       {
         path: '',
         component: ProfileComponent
+      },
+      {
+        path: ':username',
+        component: ProfileComponent
       }
     ]
   }

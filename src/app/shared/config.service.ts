@@ -25,8 +25,10 @@ export class ConfigService {
   };
 
   public profileRoutes = {
-    get: () => {
-      return `${this.api_url}profile`
+    get: (username?) => {
+      let url = `${this.api_url}profile`
+      if(username != undefined) url += `/${username}`;
+      return url;
     }
   };
 

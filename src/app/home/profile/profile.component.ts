@@ -1,5 +1,8 @@
+import { CookieService } from 'ngx-cookie-service';
+import { AuthService } from './../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { ProfileService } from './services/profile.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -9,28 +12,62 @@ import { ProfileService } from './services/profile.service';
 export class ProfileComponent implements OnInit {
 
   public profile: Object = [];
+  private username: string = null;
   public userdata: Object = {
     name: "",
     surname: "",
-    username: ""
+    username: "",
+    authprofile: false,
+    isFriend: false,
+    isFriendRequestSent: false
   }
 
   constructor(
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private cookieService: CookieService
   ) { }
 
   ngOnInit() {
-    this.getProfile();
+    this.route.params.subscribe(params => {
+      this.username = params['username'];
+      if(this.username)
+        this.getProfile(this.username);
+      else
+        this.getProfile();
+
+    });
   }
 
-  getProfile(): void {
-    this.profileService.getProfile().subscribe((data) => {
-      this.profile = data.json();
+  getProfile(username?: string): void {
+    this.profileService.getProfile(username !== undefined ? username: null).subscribe((data) => {
+      data = data.json();
+      this.profile = data['user'];
+      this.profile['ifFriendRequestSent'] = data['ifFriendRequestSent'];
+
+      if(this.profile['friends'].length != 0) {
+        this.profile['isFriend'] = false;
+        this.profile['friends'].forEach((friend) => {
+          if(friend.username == this.cookieService.get('username')) {
+            this.profile['isFriend'] = true;
+          }
+        });
+      }else {
+        this.profile['isFriend'] = false;
+      }
+      
       this.userdata = {
         name: this.profile['name'],
         surname: this.profile['surname'],
-        username: this.profile['username']
+        username: this.profile['username'],
+        authprofile: this.authService.checkIfUserIsAuthed(this.profile['username']),
+        isFriend: this.profile['isFriend'],
+        isFriendRequestSent: this.profile['ifFriendRequestSent']
       }
+
+      console.log(this.userdata);
+
     })
   }
 

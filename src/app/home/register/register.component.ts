@@ -47,7 +47,8 @@ export class RegisterComponent implements OnInit {
           }
         }, error => {
           if (error.status == 409) {
-            console.log('User is already exist');
+            this.audioService.error();
+            Swal('User is already exists', 'Please try another username', 'warning');
           }
         });
     }

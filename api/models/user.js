@@ -16,6 +16,10 @@ const fields = {
   friendrequests: [{
     type: Schema.Types.ObjectId,
     ref: 'friendrequests'
+  }],
+  friends: [{
+    type: Schema.Types.ObjectId,
+    ref: "users"
   }]
 };
 const UserSchema = new Schema(fields);
