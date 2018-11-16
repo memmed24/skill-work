@@ -15,6 +15,24 @@ export class ProfileService {
     private cookie: CookieService
   ) { }
 
+  sendFriendRequest(username: string): Observable<any> {
+    var headers = new Headers();
+    let token = this.cookie.get('api_token');
+    headers.append('x-access-token', token);
+    return this.http.post(this.config.profileRoutes.sendRequest(username), {}, {
+      headers: headers
+    });
+  }
+
+  cancelFriendRequest(username: string): Observable<any> {
+    var headers = new Headers();
+    let token = this.cookie.get('api_token');
+    headers.append('x-access-token', token);
+    return this.http.post(this.config.profileRoutes.cancelRequest(username), {}, {
+      headers: headers
+    });
+  }
+
   getProfile(username?: string): Observable<any> {
     let token = this.cookie.get('api_token');
     let headers = new Headers();

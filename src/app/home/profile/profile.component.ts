@@ -43,8 +43,10 @@ export class ProfileComponent implements OnInit {
   getProfile(username?: string): void {
     this.profileService.getProfile(username !== undefined ? username: null).subscribe((data) => {
       data = data.json();
+      console.log(data);
       this.profile = data['user'];
       this.profile['ifFriendRequestSent'] = data['ifFriendRequestSent'];
+      this.profile['isFriendRequestRecieved'] = data['isFriendRequestRecieved'];
 
       if(this.profile['friends'].length != 0) {
         this.profile['isFriend'] = false;
@@ -63,12 +65,10 @@ export class ProfileComponent implements OnInit {
         username: this.profile['username'],
         authprofile: this.authService.checkIfUserIsAuthed(this.profile['username']),
         isFriend: this.profile['isFriend'],
-        isFriendRequestSent: this.profile['ifFriendRequestSent']
+        isFriendRequestSent: this.profile['ifFriendRequestSent'],
+        isFriendRequestRecieved: this.profile['isFriendRequestRecieved']
       }
-
-      console.log(this.userdata);
-
-    })
+    });
   }
 
 }

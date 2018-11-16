@@ -29,6 +29,18 @@ export class ConfigService {
       let url = `${this.api_url}profile`
       if(username != undefined) url += `/${username}`;
       return url;
+    },
+    sendRequest: username => {
+      let url = `${this.api_url}profile/${username}/send/friend/request`;
+      return url;
+    },
+    cancelRequest: username => {
+      let url = `${this.api_url}profile/${username}/cancel/friend/request`;
+      return url;
+    },
+    acceptRequest: username => {
+      let url = `${this.api_url}profile/${username}/accept/friend/request`;
+      return url;
     }
   };
 

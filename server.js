@@ -122,6 +122,25 @@ app.post('/api/profile/:username/accept/friend/request', authguard.isAuth, async
 
 });
 
+app.post('/api/profile/:username/cancel/friend/request', authguard.isAuth, async (req, res) => {
+  let username = req.params['username'];
+  let req_reciever_id = await User.findOne({username: username}).select('id');
+  let req_sender_id = req.auth['id'];
+
+  let fr = await FriendRequest.findOneAndRemove({from: req_sender_id, to: req_reciever_id});
+ 
+  if(!fr) {
+    return res.status(404).json({
+      message: `You have not sent friend request to ${username}` 
+    });
+  }
+  
+  return res.status(200).json({
+    message: 'Canceled'
+  });
+  
+});
+
 app.get('*', function (req, res) {
   res.sendFile(__dirname + '/dist/todo-front/index.html');
 });
